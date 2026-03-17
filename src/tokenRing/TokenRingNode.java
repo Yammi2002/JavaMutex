@@ -1,4 +1,4 @@
-package TokenRing;
+package tokenRing;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;

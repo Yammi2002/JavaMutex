@@ -1,4 +1,4 @@
-package TokenRing;
+package tokenRing;
 
 import common.AbstractNode;
 import java.util.ArrayList;

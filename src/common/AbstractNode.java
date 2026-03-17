@@ -3,7 +3,7 @@ package common;
 import java.util.List;
 
 public abstract class AbstractNode extends Thread {
-    protected final int id;
+    public final int id;
     protected final List<AbstractNode> network; 
     
     public AbstractNode(int id, List<AbstractNode> network) {

@@ -1,4 +1,4 @@
-package Mcentralized;
+package centralized;
 
 import common.*;
 
