@@ -7,24 +7,42 @@ import common.Message;
 import common.MessageType;
 import common.MutualExclusionAlgorithm;
 
+/**
+ * Classe che rappresenta i nodi nell'algoritmo di mutua esclusione basato su token ring
+ */
 public class TokenRingNode extends AbstractNode implements MutualExclusionAlgorithm {
 
     private boolean wantsToEnter = false;
     private boolean hasToken = false;
     private final Semaphore waitToken = new Semaphore(0);
     
+    /**
+     * Costruttore della classe
+     * @param id, identificativo del nodo
+     * @param network, rete dei nodi
+     */
     public TokenRingNode(int id, List<AbstractNode> network) {
         super(id, network);
     }
     
+    /*
+     * Metodo per settare il token inizialmente.
+     * @param hasIt, booleano per determinare se il nodo possiede il token.
+     */
     public void setInitialToken(boolean hasIt) {
         this.hasToken = hasIt;
     }
 
+    /*
+     * Metodo per determinare l'id del nodo successivo nella catena.
+     */
     private int getNextNodeId() {
         return (this.id + 1) % network.size();
     }
 
+    /*
+     * Quando un nodo vuole entrare nella sezione critica aggiorna delle variabili interne e se non ha il token si mette in attesa.
+     */
     @Override
     public void lock() {
         this.wantsToEnter = true;
@@ -39,6 +57,9 @@ public class TokenRingNode extends AbstractNode implements MutualExclusionAlgori
         }
     }
 
+    /*
+     * Quando un nodo vuole uscire dalla sezione critica aggiorna delle varibili interne e rilascia il token al nodo successivo, segnalandolo.
+     */
     @Override
     public void unlock() {
         this.wantsToEnter = false;
@@ -48,6 +69,9 @@ public class TokenRingNode extends AbstractNode implements MutualExclusionAlgori
         send(next, new Message(id, MessageType.TOKEN));
     }
 
+    /*
+     * Quando riceve un messaggio con il token, se vuole entrare nella sezione critica lo fa, altrimenti passa il token al nodo successivo.
+     */
     @Override
     public void handleMessage(Message msg) {
         if (msg.getType() == MessageType.TOKEN) {

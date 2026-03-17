@@ -3,6 +3,9 @@ package centralized;
 import common.*;
 import java.util.*;
 
+/**
+ * Classe che rappresenta un nodo coordinatore nell'algoritmo di mutua esclusione centralizzato
+ */
 public class CentralizedCoordinator extends AbstractNode {
     private boolean resourceFree = true;
     private final Queue<Integer> requestQueue = new LinkedList<>();
@@ -11,6 +14,12 @@ public class CentralizedCoordinator extends AbstractNode {
         super(id, network);
     }
 
+    /**
+     * Metodo che definisce il comportamento del coordinatore in base al messaggio ricevuto.
+     * Nel caso si riceva una richiesta, si cotnrolla che la risorsa sia libera, nel caso la si assegna rispondendo al messaggio.
+     * Nel caso sia un messaggio di rilascio, si segna la risorsa come disponibile.
+     * @param msg, il messaggio ricevuto, di tipo OK o RELEASE.
+     */
     @Override
     public synchronized void receive(Message msg) {
         switch (msg.getType()) {

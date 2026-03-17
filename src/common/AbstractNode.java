@@ -2,6 +2,10 @@ package common;
 
 import java.util.List;
 
+/**
+ * Classe astratta che rappresenta i nodi nelle varie implementazioni. 
+ * Fornisce funzioni comuni che hanno implementazioni diverse in base al tipo di algoritmo.
+ */
 public abstract class AbstractNode extends Thread {
     public final int id;
     protected final List<AbstractNode> network; 

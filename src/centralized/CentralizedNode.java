@@ -5,6 +5,9 @@ import common.*;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+/**
+ * Classe che rappresenta un nodo nell'algoritmo di mutua esclusione centralizzato
+ */
 public class CentralizedNode extends AbstractNode implements MutualExclusionAlgorithm {
     private final int coordinatorId;
     private final Semaphore waitOk = new Semaphore(0);
@@ -14,6 +17,10 @@ public class CentralizedNode extends AbstractNode implements MutualExclusionAlgo
         this.coordinatorId = coordinatorId;
     }
 
+    /**
+     * Metodo chiamato quando il nodo intende entrare nella sezione critica.
+     * Invia al coordinatore una richiesta e si mette in attesa.
+     */
     @Override
     public void lock() {
         System.out.println("Nodo " + id + " richiede accesso al coordinatore " + coordinatorId);
@@ -24,13 +31,20 @@ public class CentralizedNode extends AbstractNode implements MutualExclusionAlgo
             Thread.currentThread().interrupt();
         }
     }
-
+    
+    /**
+     * Metodo chiamato dal nodo quando vuole uscire dalla sezione critica.
+     * Semplicemente invia al coordinatore un messaggio RELEASE.
+     */
     @Override
     public void unlock() {
         System.out.println("Nodo " + id + " rilascia la risorsa.");
         send(coordinatorId, new Message(id, MessageType.RELEASE));
     }
 
+    /**
+     * Quando il nodo riceve un messaggio, se è di OK, si segnala il semaforo
+     */
     @Override
     public void handleMessage(Message msg) {
         if (msg.getType() == MessageType.OK) {

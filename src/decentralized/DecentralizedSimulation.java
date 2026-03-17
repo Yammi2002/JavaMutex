@@ -4,8 +4,12 @@ import common.AbstractNode;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Classe che simula l'esecuzione dell'algoritmo di mutua esclusione decentralizzato
+ */
 public class DecentralizedSimulation {
-    public static void main(String[] args) {
+    public static void main() {
         List<AbstractNode> network = new ArrayList<>();
         
         int m = 5; 

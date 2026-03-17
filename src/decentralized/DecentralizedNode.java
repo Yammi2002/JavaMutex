@@ -6,6 +6,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue; 
 import java.util.concurrent.Semaphore;
 
+/**
+ * Classe che rappresenta i nodi nell'algoritmo di mutua esclusione decentralizzato
+ */
 public class DecentralizedNode extends AbstractNode implements MutualExclusionAlgorithm {
 	
 	private volatile boolean isMajorityReached = false;
@@ -18,6 +21,12 @@ public class DecentralizedNode extends AbstractNode implements MutualExclusionAl
     
     private Queue<Integer> yesID = new ConcurrentLinkedQueue<>(); 
 
+    /**
+     * Costruttore della classe.
+     * @param id Identificativo unico del nodo.
+     * @param network La lista di tutti i nodi della rete (processi e coordinatori).
+     * @param numCoordinators Numero di coordinatori (repliche) da interrogare per il voto.
+     */
     public DecentralizedNode(int id, List<AbstractNode> network, int numCoordinators) {
         super(id, network);
         this.numCoordinators = numCoordinators;
@@ -28,6 +37,13 @@ public class DecentralizedNode extends AbstractNode implements MutualExclusionAl
         handleMessage(msg);
     }
 
+    /**
+     * Gestisce l'arrivo dei messaggi di voto dai coordinatori.
+     * Implementa la logica di conteggio per determinare il raggiungimento della 
+     * maggioranza (VOTE_YES) o l'impossibilità matematica di ottenerla (VOTE_NO).
+     * @param msg Il messaggio ricevuto dalla rete.
+     */
+    @Override
     public void handleMessage(Message msg) {
         
         if (msg.getType() == MessageType.VOTE_YES) {
@@ -48,8 +64,12 @@ public class DecentralizedNode extends AbstractNode implements MutualExclusionAl
         }
     }
 
-    // ... (run() va benissimo così com'è)
 
+    /**
+     * Quando il nodo vuole entrare nella sezione critica, modifica delle variabili interne per tenere traccia del flusso.
+     * Manda poi una richiesta a tutti i coordinatori, attendendo su un semaforo. Quando si arriva ad una maggioranza di sì o di no
+     * si liberano i coordinatori e se si ha accesso il nodo entra nella sezione critica, altrimenti riprova dopo un tempo casuale.
+     */
 	@Override
 	public void lock() {
 		this.wantsToEnter = true;
@@ -89,6 +109,10 @@ public class DecentralizedNode extends AbstractNode implements MutualExclusionAl
 	    }
 	}
 
+	/*
+	 * Quando un nodo vuole uscire dalla sezione critica modifica un insieme di variabili interne e libera i coordinatori, segnalandolgli 
+	 * la sua intenzione.
+	 */
 	@Override
 	public void unlock() {
 		this.isInCriticSection = false;

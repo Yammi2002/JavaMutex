@@ -9,6 +9,9 @@ import common.Message;
 import common.MessageType;
 import common.MutualExclusionAlgorithm;
 
+/**
+ * Classe che rappresenta i nodi nell'algoritmo di mutua eslusione basato su timestamps
+ */
 public class TimeStampNode extends AbstractNode implements MutualExclusionAlgorithm {
 	private Queue<Integer> queue;
 	private int receivedOkCount = 0;
@@ -18,10 +21,19 @@ public class TimeStampNode extends AbstractNode implements MutualExclusionAlgori
     private long myRequestTimestamp = 0;
 
 
+    /**
+     * Costruttore della classe
+     * @param id, identificativo del nodo
+     * @param network, lista dei nodi della rete
+     */
 	public TimeStampNode(int id, List<AbstractNode> network) {
 		super(id, network);
 	}
 
+	/**
+	 * Quando un nodo vuole entrare nella sezione critica, lo segnala a tutti gli altri nodi della rete, indicando anche il timestamp
+	 * corrente. Successivamente si mette in attesa su un semaforo.
+	 */
 	@Override
 	public void lock() {
 	    this.wantsToEnter = true;
@@ -43,6 +55,9 @@ public class TimeStampNode extends AbstractNode implements MutualExclusionAlgori
 	    }
 	}
 
+	/*
+	 * Quando un nodo vuole liberare la propria sezione critica aggiorna delle variabili interne e segnala i nodi in attesa.
+	 */
 	@Override
 	public void unlock() {
 	    System.out.println("Nodo " + id + " esce dalla sezione critica.");
@@ -60,6 +75,17 @@ public class TimeStampNode extends AbstractNode implements MutualExclusionAlgori
 	    handleMessage(msg);
 	}
 
+	/**
+     * Gestisce i messaggi in arrivo secondo la logica di Ricart e Agrawala.
+     * * Il metodo distingue due scenari:
+     * 1. Messaggio OK: Incrementa il contatore dei consensi. Al raggiungimento di n-1 
+     * risposte, sblocca l'accesso alla sezione critica.
+     * 2. Messaggio REQUEST: Valuta la precedenza basandosi sul timestamp della richiesta. 
+     * Se il nodo locale ha una priorità maggiore (è già in SC o ha chiesto l'accesso 
+     * con un timestamp inferiore), posticipa la risposta inserendo il mittente in coda. 
+     * Altrimenti, invia immediatamente il messaggio di OK.
+     * * @param msg Il messaggio (REQUEST o OK) ricevuto dagli altri nodi della rete.
+     */
 	@Override
 	public void handleMessage(Message msg) {
 	    if (msg.getType() == MessageType.OK) {

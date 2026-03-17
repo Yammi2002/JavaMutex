@@ -4,6 +4,9 @@ import common.AbstractNode;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Classe che simula l'algoritmo di mutua esclusione basato su token
+ */
 public class TokenSimulation {
     public static void main(String[] args) {
         List<AbstractNode> network = new ArrayList<>();
